@@ -31,6 +31,9 @@ pthread_t pthread_self(void);
 void pthread_exit(void *retval);
 int pthread_cancel(pthread_t thread);
 int pthread_detach(pthread_t thread);
+
+// 这是一个比较特别的函数
+int pthread_atfork(void (*prepare)(void), void (*parent)(void), void (*child)(void));
 ```
 
 ## pthread_create
@@ -77,5 +80,14 @@ int pthread_detach(pthread_t thread);
 - int pthread_detach(pthread_t thread);
 - @thread:线程ID
 - return:成功返回0；失败返回错误码
+
+## pthread_atfork
+- int pthread_atfork(void (*prepare)(void), void (*parent)(void), void (*child)(void));
+- 调用fork时：内部创建子进程之前，在父进程中会调prepare函数；内部成功创建子进程之后，父进程会调用parent函数；创建的子进程会调用child函数
+
+注意点：
+- fork函数可能在主线程中调用，也可能在对等线程中调用
+- fork得到一个新进程，该新进程只有一个执行序列，即只有一个线程(调用fork的线程被继承下来)
+- 实际开发中，不建议编写多线程多进程程序，要么使用多进程，要么使用多线程
 
 
